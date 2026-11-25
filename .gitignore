@@ -19,3 +19,6 @@ pnpm-debug.log*
 
 # macOS-specific files
 .DS_Store
+
+# 本地音乐源文件（体积极大，改由 Cloudflare R2 外链提供）
+local-music/
