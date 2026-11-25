@@ -1,5 +1,8 @@
 /**
- * 歌单配置（R2 外链模式）
+ * 歌单配置（本地氛围曲 + R2 外链模式）
+ *
+ * 第一首是站内自带的原创暗黑氛围曲，打开页面自动播放（静音起播，
+ * 首次点击页面任意位置后出声），音量默认较低。
  *
  * 使用步骤：
  * 1. 在 Cloudflare R2 建一个公开 bucket，把 local-music/ 里的文件上传
@@ -8,7 +11,7 @@
  * 4. 保存后重新构建部署即可
  *
  * 说明：
- * - R2_BASE 留空时，播放器只显示本地示例音，不会出现一堆 404
+ * - R2_BASE 留空时播放器只有第一首氛围曲，不会出现一堆 404
  * - 文件名会自动做 URL 编码，中文和空格不用手动处理
  * - APE 格式浏览器不支持，未列入歌单；FLAC 在 Chrome/Edge 可播，Safari 可能不行
  */
@@ -98,11 +101,11 @@ const externalTracks: Track[] = R2_BASE
   : [];
 
 export const playlist: Track[] = [
-  // 本地示例音：填好 R2_BASE 后可以删掉这一项
+  // 站内自带的原创氛围曲（非任何作品原声），打开页面自动播放
   {
-    title: "示例音 · 配置 R2 后替换为外链歌单",
-    artist: "在 src/data/playlist.ts 填写 R2_BASE",
-    src: "/music/sample-ambient.wav",
+    title: "暗黑笔记 · 氛围曲（原创）",
+    artist: "Death Note 风格 · 自动播放",
+    src: "/music/dark-notebook-ambient.wav",
     cover: "/images/notebook.png",
   },
   ...externalTracks,
