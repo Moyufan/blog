@@ -2,9 +2,10 @@
 import { Icon } from "astro-icon/components";
 import { getCollection } from "astro:content";
 
-import { SITE, MENU, SIDEBAR } from "../../utils/config";
+import { SITE, MENU, SIDEBAR, SPONSOR } from "../../utils/config";
 import { __ } from "../../utils/i18n";
 import SocialList from "../sidebar/SocialList.astro";
+import Sponsor from "../post/Sponsor.astro";
 import { urlFor } from "../../utils/urlFor";
 
 async function getStats() {
@@ -45,6 +46,14 @@ const normalizedPath = currentPath.endsWith('/') && currentPath.length > 1
 </div>
 
 <SocialList />
+
+{
+  SPONSOR.enable && (
+    <div class="sidebar-sponsor">
+      <Sponsor compact />
+    </div>
+  )
+}
 
 <div class="sidebar-menu">
   {
@@ -143,6 +152,12 @@ const normalizedPath = currentPath.endsWith('/') && currentPath.length > 1
   .sidebar-state-number {
     font-weight: bold;
     font-size: 20px;
+  }
+
+  .sidebar-sponsor {
+    width: 100%;
+    padding: 0 16px;
+    box-sizing: border-box;
   }
 
   .sidebar-menu {

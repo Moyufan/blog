@@ -4,9 +4,12 @@ import { Icon } from "astro-icon/components";
 import { SPONSOR } from "../../utils/config";
 import { __ } from "../../utils/i18n";
 import { urlFor } from "../../utils/urlFor";
+
+type Props = { compact?: boolean };
+const { compact = false } = Astro.props;
 ---
 
-<div class="sponsor-wrapper">
+<div class:list={["sponsor-wrapper", { compact }]}>
   <div class="sponsor-button">
     <div class="sponsor-icon rotate">
       <Icon name="fa6-solid:book" size={24} />
@@ -32,11 +35,18 @@ import { urlFor } from "../../utils/urlFor";
 </div>
 
 <script>
+  // 页面上可能同时存在侧边栏和文章底部两个打赏区，逐个绑定、各自展开。
   const loadSponsor = () => {
-    document.querySelector(".sponsor-button")?.addEventListener("click", () => {
-      document.querySelector(".sponsor-button")?.classList.toggle("active");
-      document.querySelector(".sponsor-tip")?.classList.toggle("active");
-      document.querySelector(".sponsor-qr")?.classList.toggle("active");
+    document.querySelectorAll(".sponsor-button").forEach((button) => {
+      if (button.dataset.sponsorBound) return;
+      button.dataset.sponsorBound = "true";
+      button.addEventListener("click", () => {
+        const wrapper = button.closest(".sponsor-wrapper");
+        if (!wrapper) return;
+        wrapper.querySelector(".sponsor-button")?.classList.toggle("active");
+        wrapper.querySelector(".sponsor-tip")?.classList.toggle("active");
+        wrapper.querySelector(".sponsor-qr")?.classList.toggle("active");
+      });
     });
   };
   loadSponsor();
@@ -50,6 +60,38 @@ import { urlFor } from "../../utils/urlFor";
     flex-direction: column;
     align-items: center;
     margin: 8px 0 4px;
+
+    &.compact {
+      margin: 4px 0 12px;
+
+      .sponsor-button {
+        margin: 6px 24px;
+        border-width: 6px;
+      }
+
+      .sponsor-icon {
+        width: 22px;
+      }
+
+      .sponsor-title {
+        font-size: 15px;
+        letter-spacing: 1px;
+        padding: 6px 0;
+      }
+
+      .sponsor-tip {
+        font-size: 12px;
+      }
+
+      .sponsor-qr-image-wrapper img {
+        width: 120px;
+        height: auto;
+      }
+
+      .sponsor-qr-name {
+        font-size: 12px;
+      }
+    }
   }
 
   .sponsor-title {
