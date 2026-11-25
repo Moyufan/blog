@@ -5,7 +5,7 @@ keywords: ["SummerDusk", "Devlog", "Ren'Py", "视觉小说"]
 tags: ["Devlog", "SummerDusk", "游戏开发"]
 categories: ["开发日志"]
 pubDate: 2026-11-25
-cover: /gallery/scene-book.webp
+cover: /works/summerdusk.webp
 excerpt: "先把气氛定下来，再谈剧情和代码。"
 ---
 
