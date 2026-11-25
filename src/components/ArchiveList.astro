@@ -72,7 +72,7 @@ posts.forEach((post) => {
 
 <style lang="stylus">
   .archives-wrap {
-    padding: 20px 36px;
+    padding: 24px 36px 32px;
 
     @media screen and (max-width: 767px) {
       padding: 20px 16px;
@@ -112,14 +112,18 @@ posts.forEach((post) => {
 
   .archive-year {
     color: var(--color-archive-year);
-    font-weight: bold;
-    font-size: 24px;
+    font-weight: 600;
+    font-size: 26px;
+    letter-spacing: 1px;
   }
 
   .archive-article {
-    padding: 16px 0 16px 24px;
+    padding: 15px 12px 15px 24px;
     display: flex;
     align-items: center;
+    border-bottom: 1px dashed var(--color-h2-border);
+    border-radius: 8px;
+    transition: background 0.25s ease, padding-left 0.25s ease;
 
     &:before {
       content: '';
@@ -130,12 +134,15 @@ posts.forEach((post) => {
       background: var(--color-h2-after);
       margin: 1px 12px 0 -24px;
       box-shadow: var(--shadow-red-6-shadow);
-      opacity: 0.5;
-      transition: 0.2s;
+      opacity: 0.45;
+      transition: 0.25s ease;
       flex-shrink: 0;
     }
 
     &:hover {
+      background: var(--red-5-5);
+      padding-left: 30px;
+
       &:before {
         width: 6px;
         height: 6px;
@@ -159,15 +166,19 @@ posts.forEach((post) => {
   .dt-published {
     color: var(--grey-9);
     margin-left: 6px;
+    font-size: 13px;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: 0.5px;
   }
 
   .archive-article-title {
     display: inline-block;
     text-decoration: none;
-    font-weight: bold;
+    font-weight: 600;
     color: var(--red-0);
     transition: 0.3s;
-    opacity: 0.7;
+    opacity: 0.82;
     margin-left: 16px;
+    font-size: 15px;
   }
 </style>
