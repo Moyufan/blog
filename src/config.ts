@@ -229,7 +229,7 @@ export default {
     enable: true,
     qr: [
       { name: "微信", src: "/sponsor/wechat.png" },
-      { name: "支付宝", src: "/sponsor/alipay.png" },
+      { name: "支付宝", src: "/sponsor/alipay.jpg" },
     ],
   },
 };
