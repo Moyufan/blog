@@ -57,7 +57,8 @@ export default {
   social: {
     // email: "mailto:you@example.com",
     github: "https://github.com/Moyufan",
-    // bilibili: "https://space.bilibili.com/yourname",
+    // 后期把这里换成你自己的 B 站主页地址即可，文章底部的 B 站图标会跟着更新
+    bilibili: "https://space.bilibili.com/",
   },
 
   valine: {
@@ -215,7 +216,7 @@ export default {
     daysAgo: 180,
   },
 
-  share: ["weibo", "twitter", "facebook", "linkedin", "reddit", "qq", "weixin"],
+  share: ["weibo", "weixin", "qq", "bilibili"],
 
   sponsor: {
     enable: false,

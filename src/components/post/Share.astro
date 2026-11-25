@@ -2,7 +2,7 @@
 import type { CollectionEntry } from "astro:content";
 import { Icon } from "astro-icon/components";
 
-import { SHARE } from "../../utils/config";
+import { SHARE, SOCIAL } from "../../utils/config";
 import { urlFor } from "../../utils/urlFor";
 
 import ShareScript from "./ShareScript.astro";
@@ -27,6 +27,7 @@ const shareMap = {
   qq: (url: string, title: string, desc: string, source: string) =>
     `https://connect.qq.com/widget/shareqq/index.html?url=${url}&title=${title}&summary=${desc}&source=${source}`,
   weixin: () => `javascript:;`,
+  bilibili: () => SOCIAL.bilibili || "https://space.bilibili.com/",
 };
 
 const getShareUrl = (platform: keyof typeof shareMap) => {
@@ -46,7 +47,9 @@ const getShareUrl = (platform: keyof typeof shareMap) => {
     SHARE.map((platform: any) => (
       <a
         href={getShareUrl(platform)}
-        title={post.data.title}
+        title={platform === "bilibili"
+          ? "B站主页（在 src/config.ts 的 social.bilibili 中维护）"
+          : post.data.title}
         target={platform !== "weixin" ? "_blank" : undefined}
         rel={platform !== "weixin" ? "noopener noreferrer" : undefined}
       >

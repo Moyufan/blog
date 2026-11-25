@@ -60,6 +60,7 @@ const {
               ? new globalThis.Date(pubDate as any)
               : (pubDate as Date)}
           />
+          <slot name="meta" />
         </div>
         <div class="hr-line"></div>
         <div class="article-entry" itemprop="articleBody">
@@ -107,7 +108,8 @@ const {
 
   .article-meta {
     display: flex;
-    flex-direction: column;
+    flex-wrap: wrap;
+    align-items: center;
     padding: 20px 36px 0;
 
     @media screen and (max-width: 767px) {

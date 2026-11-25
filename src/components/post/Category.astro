@@ -31,20 +31,28 @@ const { categories } = Astro.props;
 </ul>
 
 <style>
+  .article-category-list {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
   .article-category-list-link {
     color: var(--red-1);
     text-decoration: none;
   }
   .article-category-list-item {
-    float: left;
+    display: inline-flex;
+    align-items: center;
     text-decoration: none;
     text-transform: uppercase;
     background: var(--red-5);
     color: var(--red-1);
     border-radius: 8px;
     padding: 8px 16px;
-    margin-top: 20px;
-    margin-right: 12px;
+    margin: 0 12px 16px 0;
     box-shadow: var(--shadow-meta);
   }
 </style>
