@@ -36,7 +36,7 @@ export const works: Work[] = [
     tagline: "一部关于夏末与黄昏的视觉小说",
     description:
       "水彩厚涂风格的角色立绘与落日橙色调背景，用 Ren'Py 搭建 branching 叙事。资源管线是 Krea2 img2img 加角色 LoRA，背景早期由 Blender 渲染。",
-    cover: "/works/summerdusk.webp",
+    cover: "/works/summerdusk.jpg",
     category: "游戏",
     status: "开发中",
     stack: ["Ren'Py", "Krea2", "LoRA", "Blender"],
