@@ -1,6 +1,9 @@
 export default {
   categories: "カテゴリ",
   search: "検索",
+  search_placeholder: "記事と作品を検索",
+  search_results: "%s 件見つかりました",
+  search_kind_work: "作品",
   tags: "タグ",
   tagcloud: "タグクラウド",
   tweets: "ツイート",
@@ -27,6 +30,8 @@ export default {
   archives: "アーカイブ",
   gallery: "ギャラリー",
   music: "音楽",
+  works: "作品",
+  devlog: "開発日誌",
 
   sidebar: {
     post: "投稿",

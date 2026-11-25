@@ -1,0 +1,218 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Footer from "../components/Footer.astro";
+import HeaderTitle from "../components/partial/HeaderTitle.astro";
+import HeaderSubTitle from "../components/partial/HeaderSubTitle.astro";
+import { urlFor } from "../utils/urlFor";
+import { getCollection } from "astro:content";
+
+const allPosts = await getCollection("blog");
+const logs = allPosts
+  .filter((post) => {
+    const categories = post.data.categories ?? [];
+    const tags = post.data.tags ?? [];
+    return (
+      categories.some((c) => /开发日志|devlog/i.test(c)) ||
+      tags.some((t) => /devlog|开发日志/i.test(t))
+    );
+  })
+  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+
+const formatDate = (date: Date) =>
+  `${date.getFullYear()}.${String(date.getMonth() + 1).padStart(2, "0")}.${String(date.getDate()).padStart(2, "0")}`;
+---
+
+<BaseLayout
+  title="开发日志 | Moyu's Blog"
+  description="记录 SummerDusk 等作品从想法到落地的全过程，包括踩坑、进度与复盘。"
+>
+  <HeaderTitle title="开发日志" url={urlFor("/")} slot="header" />
+  <HeaderSubTitle subtitle="把过程也写下来" url={urlFor("/")} slot="header" />
+
+  <section id="main" aria-label="开发日志">
+    <div class="devlog-page">
+      <div class="devlog-intro">
+        <span class="devlog-mark">✦</span>
+        成品只展示结果，开发日志记录过程。写文章时在
+        <code>categories</code> 里加上 <code>开发日志</code>，或在
+        <code>tags</code> 里加 <code>Devlog</code>，就会自动出现在这里。也可以
+        <a href={urlFor("rss.xml")}>订阅 RSS</a> 追更。
+      </div>
+
+      {
+        logs.length > 0 ? (
+          <div class="devlog-timeline">
+            {logs.map((post) => (
+              <article class="devlog-entry">
+                <div class="devlog-dot" aria-hidden="true" />
+                <div class="devlog-card">
+                  <div class="devlog-date">
+                    <time datetime={post.data.pubDate.toISOString()}>
+                      {formatDate(post.data.pubDate)}
+                    </time>
+                    {post.data.tags?.slice(0, 3).map((tag) => (
+                      <span class="devlog-tag">{tag}</span>
+                    ))}
+                  </div>
+                  <h2>
+                    <a href={urlFor(`blog/${post.id}/`)}>{post.data.title}</a>
+                  </h2>
+                  <p>{post.data.description}</p>
+                  <a class="devlog-more" href={urlFor(`blog/${post.id}/`)}>
+                    继续阅读 →
+                  </a>
+                </div>
+              </article>
+            ))}
+          </div>
+        ) : (
+          <p class="devlog-empty">
+            还没有开发日志。新建一篇博客文章，把分类写成「开发日志」就会出现在这里。
+          </p>
+        )
+      }
+    </div>
+  </section>
+
+  <Footer slot="footer" />
+</BaseLayout>
+
+<style lang="stylus">
+.devlog-page
+  width calc(100% - 40px)
+  max-width 940px
+  margin 0 auto 40px
+  padding 28px
+  box-sizing border-box
+  background var(--color-wrap)
+  border-radius 12px
+  box-shadow var(--shadow-card)
+  transition .3s
+
+.devlog-intro
+  font-size 13px
+  color var(--grey-9)
+  line-height 1.8
+  margin-bottom 26px
+
+  .devlog-mark
+    color var(--red-2)
+    margin-right 6px
+
+  code
+    background var(--red-5-5)
+    color var(--red-1)
+    padding 2px 5px
+    border-radius 4px
+    font-size 12px
+
+  a
+    color var(--red-1)
+    text-decoration none
+    border-bottom 1px dashed var(--red-3)
+
+    &:hover
+      border-bottom-style solid
+
+.devlog-timeline
+  position relative
+  padding-left 28px
+
+  &:before
+    content ''
+    position absolute
+    left 5px
+    top 8px
+    bottom 8px
+    width 1px
+    background var(--color-border)
+
+.devlog-entry
+  position relative
+  margin-bottom 22px
+
+  &:last-child
+    margin-bottom 0
+
+.devlog-dot
+  position absolute
+  left -28px
+  top 24px
+  width 11px
+  height 11px
+  border-radius 50%
+  background var(--red-6)
+  border 2px solid var(--red-3)
+  transition .25s
+
+.devlog-entry:hover .devlog-dot
+  background var(--red-1)
+  border-color var(--red-1)
+
+.devlog-card
+  border 1px solid var(--color-border)
+  border-radius 10px
+  padding 18px 22px
+  background var(--color-background)
+  transition .25s
+
+  &:hover
+    transform translateY(-2px)
+    box-shadow var(--shadow-card-hover)
+    border-color var(--red-3)
+
+.devlog-date
+  display flex
+  align-items center
+  flex-wrap wrap
+  gap 8px
+  margin-bottom 8px
+
+  time
+    font-size 12px
+    color var(--grey-9)
+    font-variant-numeric tabular-nums
+
+.devlog-tag
+  font-size 11px
+  color var(--red-2)
+  border 1px solid var(--color-border)
+  border-radius 20px
+  padding 1px 8px
+
+.devlog-card h2
+  font-size 18px
+  font-weight 600
+  margin 0 0 8px
+
+  a
+    color var(--color-link)
+    text-decoration none
+
+    &:hover
+      color var(--red-1)
+
+.devlog-card p
+  font-size 13px
+  line-height 1.75
+  color var(--grey-9)
+  margin 0 0 12px
+
+.devlog-more
+  font-size 12px
+  color var(--red-1)
+  text-decoration none
+  border-bottom 1px solid var(--red-3)
+
+  &:hover
+    border-bottom-color var(--red-0)
+
+.devlog-empty
+  text-align center
+  color var(--grey-9)
+  font-size 13px
+  padding 40px 0
+
+:global([data-theme='dark']) .devlog-card
+  background var(--color-code-background)
+</style>

@@ -13,6 +13,16 @@ import Clarity from "./Clarity.astro";
   )
 }
 {ANALYTICS.clarity && <Clarity id={ANALYTICS.clarity} />}
+{
+  ANALYTICS.cloudflare && (
+    <script
+      is:inline
+      defer
+      src="https://static.cloudflareinsights.com/beacon.min.js"
+      data-cf-beacon={JSON.stringify({ token: ANALYTICS.cloudflare })}
+    ></script>
+  )
+}
 <script is:inline>
   if (!window.loadScript) {
     window.loadScript = (src, options, target) =>

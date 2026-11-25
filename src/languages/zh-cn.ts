@@ -1,6 +1,9 @@
 export default {
   categories: "分类",
   search: "搜索",
+  search_placeholder: "搜索文章与作品",
+  search_results: "找到 %s 条结果",
+  search_kind_work: "作品",
   tags: "标签",
   tagcloud: "标签云",
   tweets: "推文",
@@ -27,6 +30,8 @@ export default {
   archives: "归档",
   gallery: "相册",
   music: "音乐",
+  works: "作品集",
+  devlog: "开发日志",
 
   sidebar: {
     post: "文章",

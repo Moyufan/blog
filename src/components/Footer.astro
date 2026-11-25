@@ -46,6 +46,13 @@ const notebookUrl = urlFor("images/notebook.png");
         )
       }
       {
+        <div>
+          <Icon name="fa6-solid:rss" />
+          &nbsp;
+          <a href={urlFor("rss.xml")}>{__("rss_feed")}</a>
+        </div>
+      }
+      {
         FOOTER.count && (
           <div>
             <Icon name="fa6-solid:paintbrush" />

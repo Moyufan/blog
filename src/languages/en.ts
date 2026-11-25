@@ -1,6 +1,9 @@
 export default {
   categories: "Categories",
   search: "Search",
+  search_placeholder: "Search posts and works",
+  search_results: "Found %s results",
+  search_kind_work: "Work",
   tags: "Tags",
   tagcloud: "Tag Cloud",
   tweets: "Tweets",
@@ -27,6 +30,8 @@ export default {
   archives: "Archives",
   gallery: "Gallery",
   music: "Music",
+  works: "Works",
+  devlog: "Devlog",
 
   sidebar: {
     post: "Posts",

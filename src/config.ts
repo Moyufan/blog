@@ -18,6 +18,8 @@ export default {
   // 菜单名必须是 src/languages/*.ts 中存在的翻译键
   menu: [
     { name: "home", url: "/" },
+    { name: "works", url: "/works" },
+    { name: "devlog", url: "/devlog" },
     { name: "archives", url: "/archives" },
     { name: "gallery", url: "/gallery" },
     { name: "about", url: "/about" },
@@ -52,6 +54,9 @@ export default {
     baidu_analytics: false,
     google_analytics: false,
     clarity: false,
+    // Cloudflare Web Analytics 的 token；留空表示不启用。
+    // 在 Cloudflare 面板 → Web Analytics → 站点 → 复制 token 填到这里即可。
+    cloudflare: "",
   },
 
   social: {

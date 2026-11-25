@@ -1,0 +1,330 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Footer from "../components/Footer.astro";
+import HeaderTitle from "../components/partial/HeaderTitle.astro";
+import HeaderSubTitle from "../components/partial/HeaderSubTitle.astro";
+import { urlFor } from "../utils/urlFor";
+import { works, workCategories } from "../data/works";
+
+const statusClass = (status: string) =>
+  status === "开发中"
+    ? "dev"
+    : status === "已发布" || status === "已完成"
+      ? "done"
+      : "ongoing";
+---
+
+<BaseLayout
+  title="作品集 | Moyu's Blog"
+  description="Moyu 做过的软件、游戏、小程序和网站，包含开发状态、技术栈与相关链接。"
+>
+  <HeaderTitle title="作品集" url={urlFor("/")} slot="header" />
+  <HeaderSubTitle subtitle="把做过的东西摆出来" url={urlFor("/")} slot="header" />
+
+  <section id="main" aria-label="作品集">
+    <div class="works-page">
+      <div class="works-intro">
+        <span class="works-mark">✦</span>
+        这里放我自己做的小软件、游戏和工具。上新只要改
+        <code>src/data/works.ts</code>，页面会自动更新。想第一时间知道更新，可以
+        <a href={urlFor("rss.xml")}>订阅 RSS</a>。
+      </div>
+
+      <div class="works-filters" id="works-filters">
+        {
+          workCategories.map((category, i) => (
+            <button
+              type="button"
+              class:list={["works-filter", { active: i === 0 }]}
+              data-filter={category}
+            >
+              {category}
+            </button>
+          ))
+        }
+      </div>
+
+      <div class="works-grid" id="works-grid">
+        {
+          works.map((work) => (
+            <article class="work-card" id={work.id} data-category={work.category}>
+              <div class="work-cover">
+                <img
+                  src={urlFor(work.cover)}
+                  alt={work.name}
+                  loading="lazy"
+                  decoding="async"
+                />
+              </div>
+              <div class="work-body">
+                <div class="work-top">
+                  <span class:list={["work-status", statusClass(work.status)]}>
+                    {work.status}
+                  </span>
+                  <span class="work-updated">{work.updated}</span>
+                </div>
+                <h2>{work.name}</h2>
+                <p class="work-tagline">{work.tagline}</p>
+                <p class="work-desc">{work.description}</p>
+                <div class="work-stack">
+                  {work.stack.map((item) => (
+                    <span class="work-stack-item">{item}</span>
+                  ))}
+                </div>
+                {work.links.length > 0 && (
+                  <div class="work-links">
+                    {work.links.map((link) =>
+                      link.external ? (
+                        <a
+                          class="work-link"
+                          href={link.url}
+                          target="_blank"
+                          rel="noopener nofollow noreferrer"
+                        >
+                          {link.label} ↗
+                        </a>
+                      ) : (
+                        <a class="work-link" href={urlFor(link.url)}>
+                          {link.label} →
+                        </a>
+                      )
+                    )}
+                  </div>
+                )}
+              </div>
+            </article>
+          ))
+        }
+      </div>
+
+      {
+        works.length === 0 && (
+          <p class="works-empty">作品集还是空的，去 src/data/works.ts 添加吧。</p>
+        )
+      }
+    </div>
+  </section>
+
+  <Footer slot="footer" />
+</BaseLayout>
+
+<script>
+  const setup = () => {
+    const buttons = document.querySelectorAll<HTMLButtonElement>(".works-filter");
+    if (buttons.length === 0) return;
+
+    buttons.forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const filter = btn.dataset.filter;
+        buttons.forEach((b) => b.classList.toggle("active", b === btn));
+        document.querySelectorAll<HTMLElement>(".work-card").forEach((card) => {
+          card.classList.toggle(
+            "hidden",
+            filter !== "全部" && card.dataset.category !== filter
+          );
+        });
+      });
+    });
+
+    if (location.hash) {
+      const target = document.getElementById(decodeURIComponent(location.hash.slice(1)));
+      target?.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
+  };
+
+  document.addEventListener("astro:page-load", setup, { once: true });
+  if (document.readyState !== "loading") setup();
+</script>
+
+<style lang="stylus">
+.works-page
+  width calc(100% - 40px)
+  max-width 1100px
+  margin 0 auto 40px
+  padding 28px
+  box-sizing border-box
+  background var(--color-wrap)
+  border-radius 12px
+  box-shadow var(--shadow-card)
+  transition .3s
+
+.works-intro
+  font-size 13px
+  color var(--grey-9)
+  line-height 1.8
+  margin-bottom 18px
+
+  .works-mark
+    color var(--red-2)
+    margin-right 6px
+
+  code
+    background var(--red-5-5)
+    color var(--red-1)
+    padding 2px 5px
+    border-radius 4px
+    font-size 12px
+
+  a
+    color var(--red-1)
+    text-decoration none
+    border-bottom 1px dashed var(--red-3)
+
+    &:hover
+      color var(--red-0)
+      border-bottom-style solid
+
+.works-filters
+  display flex
+  flex-wrap wrap
+  gap 8px
+  margin-bottom 22px
+
+.works-filter
+  border 1px solid var(--color-border)
+  background transparent
+  color var(--color-default)
+  padding 6px 16px
+  border-radius 20px
+  font-size 13px
+  cursor pointer
+  transition .2s
+
+  &:hover
+    border-color var(--red-3)
+    color var(--red-1)
+
+  &.active
+    background var(--red-1)
+    border-color var(--red-1)
+    color var(--red-6)
+
+.works-grid
+  display grid
+  grid-template-columns repeat(2, minmax(0, 1fr))
+  gap 18px
+
+  @media screen and (max-width: 767px)
+    grid-template-columns 1fr
+
+.work-card
+  border 1px solid var(--color-border)
+  border-radius 12px
+  overflow hidden
+  background var(--color-background)
+  display flex
+  flex-direction column
+  transition .25s
+
+  &.hidden
+    display none
+
+  &:hover
+    transform translateY(-3px)
+    box-shadow var(--shadow-card-hover)
+    border-color var(--red-3)
+
+.work-cover
+  height 150px
+  overflow hidden
+  background var(--red-6)
+
+  img
+    width 100%
+    height 100%
+    object-fit cover
+    display block
+    transition transform .35s
+
+.work-card:hover .work-cover img
+  transform scale(1.04)
+
+.work-body
+  padding 18px 20px 20px
+  display flex
+  flex-direction column
+  flex 1
+
+.work-top
+  display flex
+  align-items center
+  justify-content space-between
+  margin-bottom 10px
+
+.work-status
+  font-size 11px
+  padding 3px 10px
+  border-radius 20px
+  border 1px solid var(--red-4)
+  color var(--red-1)
+  background var(--red-5-5)
+
+  &.dev
+    border-color var(--red-3)
+    background var(--red-6)
+
+  &.done
+    border-color var(--red-4)
+
+.work-updated
+  font-size 11px
+  color var(--grey-9)
+  font-variant-numeric tabular-nums
+
+.work-card h2
+  font-size 19px
+  font-weight 600
+  color var(--color-link)
+  margin 0 0 6px
+  letter-spacing .5px
+
+.work-tagline
+  font-size 13px
+  color var(--red-2)
+  margin 0 0 10px
+
+.work-desc
+  font-size 12px
+  line-height 1.75
+  color var(--grey-9)
+  margin 0 0 14px
+  flex 1
+
+.work-stack
+  display flex
+  flex-wrap wrap
+  gap 6px
+  margin-bottom 14px
+
+.work-stack-item
+  font-size 11px
+  color var(--red-2)
+  border 1px solid var(--color-border)
+  border-radius 4px
+  padding 2px 7px
+
+.work-links
+  display flex
+  flex-wrap wrap
+  gap 12px
+
+.work-link
+  font-size 12px
+  color var(--red-1)
+  text-decoration none
+  border-bottom 1px solid var(--red-3)
+  padding-bottom 1px
+
+  &:hover
+    color var(--red-0)
+    border-bottom-color var(--red-0)
+
+.works-empty
+  text-align center
+  color var(--grey-9)
+  font-size 13px
+  padding 40px 0
+
+:global([data-theme='dark']) .work-card
+  background var(--color-code-background)
+</style>

@@ -3,6 +3,7 @@ import Fuse from "fuse.js";
 import { useState, useEffect, useMemo, useRef } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSearch, faTimesCircle } from "@fortawesome/free-solid-svg-icons";
+import { __, _p } from "../../utils/i18n";
 
 // Configs fuse.js
 // https://fusejs.io/api/options.html
@@ -20,6 +21,8 @@ type SearchItem = {
     description: string;
     keywords?: string | string[];
     pubDate?: string;
+    kind?: "post" | "work";
+    link?: string;
   };
 };
 
@@ -129,7 +132,7 @@ export default function SearchBox({
                 type="text"
                 value={query}
                 onChange={handleOnSearch}
-                placeholder="Search"
+                placeholder={__("search_placeholder")}
                 className=""
               />
               <FontAwesomeIcon
@@ -144,11 +147,7 @@ export default function SearchBox({
             <div id="reimu-stats">
               {query.length > 1 && (
                 <>
-                  <p>
-                    Found {posts.length}{" "}
-                    {posts.length === 1 ? "result" : "results"} for &apos;
-                    {query}&apos;
-                  </p>
+                  <p>{_p("search_results", posts.length)}</p>
                   <hr />
                 </>
               )}
@@ -160,8 +159,13 @@ export default function SearchBox({
                     <li className="reimu-hit-item" key={index}>
                       <a
                         className="reimu-hit-item-link"
-                        href={`${postUrlPrefix}/${post.id}`}
+                        href={post.data.link || `${postUrlPrefix}/${post.id}`}
                       >
+                        {post.data.kind === "work" && (
+                          <span className="reimu-hit-kind">
+                            {__("search_kind_work")}
+                          </span>
+                        )}
                         {post.data.title}
                       </a>
                       {post.data.description}
