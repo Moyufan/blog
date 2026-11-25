@@ -19,6 +19,7 @@ export default {
   menu: [
     { name: "home", url: "/" },
     { name: "archives", url: "/archives" },
+    { name: "gallery", url: "/gallery" },
     { name: "about", url: "/about" },
   ],
 

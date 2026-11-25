@@ -25,6 +25,8 @@ export default {
   about: "プロフィール",
   friend: "フレンド",
   archives: "アーカイブ",
+  gallery: "ギャラリー",
+  music: "音楽",
 
   sidebar: {
     post: "投稿",

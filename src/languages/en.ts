@@ -25,6 +25,8 @@ export default {
   about: "About",
   friend: "Friend",
   archives: "Archives",
+  gallery: "Gallery",
+  music: "Music",
 
   sidebar: {
     post: "Posts",

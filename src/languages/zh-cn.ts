@@ -25,6 +25,8 @@ export default {
   about: "关于",
   friend: "友链",
   archives: "归档",
+  gallery: "相册",
+  music: "音乐",
 
   sidebar: {
     post: "文章",

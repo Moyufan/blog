@@ -1,0 +1,257 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Footer from "../components/Footer.astro";
+import HeaderTitle from "../components/partial/HeaderTitle.astro";
+import HeaderSubTitle from "../components/partial/HeaderSubTitle.astro";
+import { urlFor } from "../utils/urlFor";
+import { photos } from "../data/gallery";
+
+const categories = ["全部", ...Array.from(new Set(photos.map((p) => p.category)))];
+---
+
+<BaseLayout title="相册 | Moyu's Blog" description="Moyu 的暗黑笔记本风格相册">
+  <HeaderTitle title="相册" url={urlFor("/")} slot="header" />
+  <HeaderSubTitle subtitle="一些光影碎片" url={urlFor("/")} slot="header" />
+
+  <section id="main" aria-label="相册">
+    <div class="gallery-page">
+      <div class="gallery-intro">
+        <span class="gallery-mark">✦</span>
+        点击图片可放大查看。把你的图片放进 <code>public/gallery</code>，再在
+        <code>src/data/gallery.ts</code> 里加一项就能上新。
+      </div>
+
+      <div class="gallery-filters" id="gallery-filters">
+        {
+          categories.map((category, i) => (
+            <button
+              type="button"
+              class:list={["gallery-filter", { active: i === 0 }]}
+              data-filter={category}
+            >
+              {category}
+            </button>
+          ))
+        }
+      </div>
+
+      <div class="gallery-grid" id="gallery-grid">
+        {
+          photos.map((photo) => (
+            <figure class="gallery-card" data-category={photo.category}>
+              <a
+                class="gallery-item"
+                href={urlFor(photo.src)}
+                data-pswp-width={photo.width}
+                data-pswp-height={photo.height}
+                target="_blank"
+                rel="noopener"
+              >
+                <img src={urlFor(photo.src)} alt={photo.title} loading="lazy" decoding="async" />
+                <span class="gallery-zoom" aria-hidden="true">＋</span>
+              </a>
+              <figcaption>
+                <strong>{photo.title}</strong>
+                <small>{photo.caption}</small>
+              </figcaption>
+            </figure>
+          ))
+        }
+      </div>
+
+      {
+        photos.length === 0 && (
+          <p class="gallery-empty">相册还是空的，去 src/data/gallery.ts 添加照片吧。</p>
+        )
+      }
+    </div>
+  </section>
+
+  <Footer slot="footer" />
+</BaseLayout>
+
+<script>
+  import PhotoSwipeLightbox from "photoswipe/lightbox";
+  import "photoswipe/style.css";
+
+  const setup = () => {
+    const grid = document.getElementById("gallery-grid");
+    if (!grid || grid.dataset.ready === "1") return;
+    grid.dataset.ready = "1";
+
+    let lightbox: InstanceType<typeof PhotoSwipeLightbox> | null = null;
+
+    const initLightbox = () => {
+      if (lightbox) {
+        lightbox.destroy();
+        lightbox = null;
+      }
+      lightbox = new PhotoSwipeLightbox({
+        gallery: "#gallery-grid",
+        children: ".gallery-card:not(.hidden) a.gallery-item",
+        pswpModule: () => import("photoswipe"),
+        bgOpacity: 0.94,
+        showHideAnimationType: "fade",
+      });
+      lightbox.init();
+    };
+
+    initLightbox();
+
+    const buttons = document.querySelectorAll<HTMLButtonElement>(".gallery-filter");
+    buttons.forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const filter = btn.dataset.filter;
+        buttons.forEach((b) => b.classList.toggle("active", b === btn));
+        document.querySelectorAll<HTMLElement>(".gallery-card").forEach((card) => {
+          card.classList.toggle("hidden", filter !== "全部" && card.dataset.category !== filter);
+        });
+        initLightbox();
+      });
+    });
+
+    document.addEventListener("astro:before-swap", () => lightbox?.destroy(), { once: true });
+  };
+
+  document.addEventListener("astro:page-load", setup, { once: true });
+  if (document.readyState !== "loading") setup();
+</script>
+
+<style lang="stylus">
+.gallery-page
+  width calc(100% - 40px)
+  max-width 1100px
+  margin 0 auto 40px
+  padding 28px
+  box-sizing border-box
+  background var(--color-wrap)
+  border-radius 12px
+  box-shadow var(--shadow-card)
+  transition .3s
+
+.gallery-intro
+  font-size 13px
+  color var(--grey-9)
+  line-height 1.8
+  margin-bottom 18px
+
+  .gallery-mark
+    color var(--red-1)
+    margin-right 6px
+
+  code
+    background var(--red-5-5)
+    color var(--red-1)
+    padding 2px 5px
+    border-radius 4px
+    font-size 12px
+
+.gallery-filters
+  display flex
+  flex-wrap wrap
+  gap 8px
+  margin-bottom 22px
+
+.gallery-filter
+  border 1px solid var(--color-border)
+  background transparent
+  color var(--color-default)
+  padding 6px 16px
+  border-radius 20px
+  font-size 13px
+  cursor pointer
+  transition .2s
+
+  &:hover
+    border-color var(--red-2)
+    color var(--red-1)
+
+  &.active
+    background var(--red-1)
+    border-color var(--red-1)
+    color #fff
+
+.gallery-grid
+  columns 3
+  column-gap 16px
+
+  @media screen and (max-width: 959px)
+    columns 2
+
+  @media screen and (max-width: 600px)
+    columns 1
+
+.gallery-card
+  break-inside avoid
+  margin 0 0 16px
+  display inline-block
+  width 100%
+  box-sizing border-box
+  border-radius 10px
+  overflow hidden
+  background var(--color-background)
+  border 1px solid var(--color-border)
+  transition .25s
+
+  &.hidden
+    display none
+
+  &:hover
+    transform translateY(-3px)
+    box-shadow var(--shadow-card-hover)
+
+.gallery-item
+  display block
+  position relative
+  overflow hidden
+
+  img
+    display block
+    width 100%
+    height auto
+    transition transform .35s
+
+  &:hover img
+    transform scale(1.05)
+
+.gallery-zoom
+  position absolute
+  right 10px
+  top 10px
+  width 26px
+  height 26px
+  border-radius 50%
+  background rgba(0, 0, 0, .55)
+  color #fff
+  font-size 18px
+  line-height 24px
+  text-align center
+  opacity 0
+  transition .25s
+
+.gallery-item:hover .gallery-zoom
+  opacity 1
+
+figcaption
+  padding 10px 12px 12px
+  display flex
+  flex-direction column
+  gap 4px
+
+  strong
+    font-size 13px
+    color var(--color-default)
+
+  small
+    font-size 11px
+    color var(--grey-9)
+
+.gallery-empty
+  text-align center
+  color var(--grey-9)
+  font-size 13px
+  padding 40px 0
+
+:global([data-theme='dark']) .gallery-card
+  background var(--color-code-background)
+</style>

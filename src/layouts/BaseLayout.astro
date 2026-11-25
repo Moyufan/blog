@@ -12,6 +12,7 @@ import ThemeScript from "../components/partial/ThemeScript.astro";
 import Header from "../components/Header.astro";
 import AfterFooter from "../components/AfterFooter.astro";
 import ToTop from "../components/partial/ToTop";
+import MusicPlayer from "../components/MusicPlayer.astro";
 import Loader from "../components/partial/Loader.astro";
 import Sidebar from "../components/Sidebar.astro";
 import MobileNav from "../components/MobileNav.astro";
@@ -92,6 +93,7 @@ const headerImage = cover || BANNER;
     <slot name="footer" />
     <AfterFooter />
     <ToTop client:load imageUrl={urlFor("images/notebook.png")} />
+    <MusicPlayer />
     <MobileNav isPost={isPost} headings={headings} toc={toc} />
     <div id="mask" class="hide"></div>
     <SidebarScript />
