@@ -4,8 +4,9 @@
  * 添加一个作品：
  * 1. 把封面图放进 public/works/（推荐 webp，宽度 1200px 左右即可）
  * 2. 在下面数组里加一项，id 用英文小写加连字符（例如 my-tool）
- * 3. links 里填下载、源码、演示或文章链接；没有就留空数组
- * 4. status 常用值：开发中 / 已发布 / 持续更新 / 内部使用
+ * 3. preview 填在线预览 / 试玩 / Demo 的完整网址（http 开头），没有就不填
+ * 4. links 里填下载、源码、演示或文章链接；没有就留空数组
+ * 5. status 常用值：开发中 / 已发布 / 持续更新 / 内部使用
  */
 export interface WorkLink {
   label: string;
@@ -23,6 +24,8 @@ export interface Work {
   status: string;
   stack: string[];
   updated: string;
+  /** 在线预览地址；填了之后封面可点击，并显示「在线预览」入口 */
+  preview?: string;
   links: WorkLink[];
 }
 
@@ -38,11 +41,12 @@ export const works: Work[] = [
     status: "开发中",
     stack: ["Ren'Py", "Krea2", "LoRA", "Blender"],
     updated: "2026-11",
+    preview: "https://blog-907.pages.dev/gallery/",
     links: [{ label: "开发日志", url: "/devlog", external: false }],
   },
   {
     id: "health-dashboard",
-    name: "基层医疗数据大屏",
+    name: "基层医防融合数据平台",
     tagline: "慢病管理与村居对比的内网分析系统",
     description:
       "把 PHIS 的居民档案、高血压、糖尿病和老年人管理数据迁到 Postgres，用 DRF 提供接口、Vue3 呈现大屏，并接入本地大模型做辅助解读。",
@@ -96,6 +100,7 @@ export const works: Work[] = [
     status: "持续更新",
     stack: ["Astro", "Cloudflare Pages", "GitHub"],
     updated: "2026-11",
+    preview: "https://blog-907.pages.dev/",
     links: [
       {
         label: "建站全过程",

@@ -110,11 +110,20 @@ console.log("Hello, Moyu's Blog");
 | `updatedDate` | 否 | 最后修改日期 |
 | `tags` | 否 | 标签，会生成标签页 |
 | `categories` | 否 | 分类，会生成分类页 |
-| `cover` | 否 | 文章封面，不填用默认图 |
+| `cover` | 否 | 文章封面，图片放 `public/images/` 或 `public/works/`，填 `/images/xxx.webp`；会显示在首页卡片、文章页顶部横幅和微信/微博分享图里，不填用默认横幅 |
 | `comment` | 否 | 是否显示评论区，当前评论系统未开启 |
 | `toc` | 否 | 是否显示文章目录 |
+| `sponsor` | 否 | 单篇打赏开关；默认显示，填 `false` 关闭 |
 
 日期建议写成 `"2026-11-25"` 这种格式，并保留英文引号。
+
+封面推荐用 1200×630 左右的横图，转成 webp 放到 `public/images/`（或 `public/works/`），然后在 frontmatter 里写绝对路径，例如：
+
+```yaml
+cover: "/works/health-dashboard.webp"
+```
+
+保存后重新构建，首页卡片、文章页顶部横幅、社交分享预览图会一起换掉。
 
 ### 1.4 在文章里插入图片
 
@@ -297,6 +306,7 @@ D:\blog\src\config.ts
 | 顶部横幅 | `banner` 和 `banner_srcset` |
 | 导航菜单 | `menu`，目前是首页、归档、相册、关于 |
 | 社交链接 | `social` |
+| 打赏收款码 | 替换 `public/sponsor/wechat.png` / `alipay.png`，开关在 `sponsor.enable` |
 | 关于页面正文 | `src/pages/about.mdx` |
 
 菜单显示的名字来自语言文件，比如中文在：

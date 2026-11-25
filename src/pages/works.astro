@@ -25,7 +25,7 @@ const statusClass = (status: string) =>
     <div class="works-page">
       <div class="works-intro">
         <span class="works-mark">✦</span>
-        这里放我自己做的小软件、游戏和工具。上新只要改
+        这里放我自己做的小软件、游戏和工具。带「在线预览」的封面可以直接点开看效果。上新只要改
         <code>src/data/works.ts</code>，页面会自动更新。想第一时间知道更新，可以
         <a href={urlFor("rss.xml")}>订阅 RSS</a>。
       </div>
@@ -49,12 +49,32 @@ const statusClass = (status: string) =>
           works.map((work) => (
             <article class="work-card" id={work.id} data-category={work.category}>
               <div class="work-cover">
-                <img
-                  src={urlFor(work.cover)}
-                  alt={work.name}
-                  loading="lazy"
-                  decoding="async"
-                />
+                {
+                  work.preview ? (
+                    <a
+                      class="work-cover-link"
+                      href={work.preview}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      aria-label={`在线预览 ${work.name}`}
+                    >
+                      <img
+                        src={urlFor(work.cover)}
+                        alt={work.name}
+                        loading="lazy"
+                        decoding="async"
+                      />
+                      <span class="work-preview-badge">在线预览 ↗</span>
+                    </a>
+                  ) : (
+                    <img
+                      src={urlFor(work.cover)}
+                      alt={work.name}
+                      loading="lazy"
+                      decoding="async"
+                    />
+                  )
+                }
               </div>
               <div class="work-body">
                 <div class="work-top">
@@ -71,8 +91,18 @@ const statusClass = (status: string) =>
                     <span class="work-stack-item">{item}</span>
                   ))}
                 </div>
-                {work.links.length > 0 && (
+                {(work.preview || work.links.length > 0) && (
                   <div class="work-links">
+                    {work.preview && (
+                      <a
+                        class="work-link work-link-preview"
+                        href={work.preview}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        在线预览 ↗
+                      </a>
+                    )}
                     {work.links.map((link) =>
                       link.external ? (
                         <a
@@ -228,6 +258,7 @@ const statusClass = (status: string) =>
   height 150px
   overflow hidden
   background var(--red-6)
+  position relative
 
   img
     width 100%
@@ -236,8 +267,34 @@ const statusClass = (status: string) =>
     display block
     transition transform .35s
 
+.work-cover-link
+  display block
+  width 100%
+  height 100%
+  position relative
+
+.work-preview-badge
+  position absolute
+  right 10px
+  bottom 10px
+  font-size 11px
+  letter-spacing .5px
+  padding 4px 10px
+  border-radius 20px
+  color #f5f5f5
+  background rgba(18, 18, 18, .72)
+  border 1px solid rgba(255, 255, 255, .18)
+  backdrop-filter blur(4px)
+  opacity 0
+  transform translateY(4px)
+  transition .25s
+
 .work-card:hover .work-cover img
   transform scale(1.04)
+
+.work-card:hover .work-preview-badge
+  opacity 1
+  transform translateY(0)
 
 .work-body
   padding 18px 20px 20px
@@ -318,6 +375,9 @@ const statusClass = (status: string) =>
   &:hover
     color var(--red-0)
     border-bottom-color var(--red-0)
+
+  &.work-link-preview
+    font-weight 600
 
 .works-empty
   text-align center

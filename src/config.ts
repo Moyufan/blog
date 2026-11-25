@@ -223,8 +223,13 @@ export default {
 
   share: ["weibo", "weixin", "qq", "bilibili"],
 
+  // 文章底部打赏入口。把 public/sponsor/wechat.png 和 alipay.png
+  // 换成你自己的收款码（保持文件名一致）即可生效。
   sponsor: {
-    enable: false,
-    qr: [],
+    enable: true,
+    qr: [
+      { name: "微信", src: "/sponsor/wechat.png" },
+      { name: "支付宝", src: "/sponsor/alipay.png" },
+    ],
   },
 };

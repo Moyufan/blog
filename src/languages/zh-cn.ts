@@ -97,7 +97,7 @@ export default {
   },
 
   sponsor: {
-    title: "赞助",
-    tip: "请作者喝杯咖啡吧"
+    title: "打赏",
+    tip: "如果这篇文章帮到你，可以请作者喝杯咖啡"
   },
 };
