@@ -8,7 +8,7 @@ import { __ } from "../utils/i18n";
 
 const totalcount = await totalCount();
 const totalmin2read = await totalReadingTime();
-const taichiUrl = urlFor("images/taichi.png");
+const notebookUrl = urlFor("images/notebook.png");
 ---
 
 <footer id="footer">
@@ -132,7 +132,7 @@ const taichiUrl = urlFor("images/taichi.png");
   </div>
 </footer>
 
-<style lang="stylus" define:vars={{ imageUrl: `url('${taichiUrl}')` }}>
+<style lang="stylus" define:vars={{ imageUrl: `url('${notebookUrl}')` }}>
   #footer {
     background: linear-gradient(
       to top,
@@ -193,7 +193,8 @@ const taichiUrl = urlFor("images/taichi.png");
     width: 24px;
     height: 24px;
     opacity: 0.8;
-    background: var(--imageUrl) no-repeat center / 80%;
+    background: var(--imageUrl) no-repeat center / 100%;
+    filter: drop-shadow(0 0 3px rgba(183, 28, 28, .45));
     animation: rotate-all 3s infinite;
     animation-timing-function: linear;
   }

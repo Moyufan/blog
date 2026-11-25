@@ -1,15 +1,15 @@
 export default {
   site: {
     title: "Moyu's Blog",
-    subtitle: "二次元随笔 | 番剧与随笔",
-    description: "Moyu 的个人博客，二次元、随笔、杂记",
+    subtitle: "暗黑笔记 | 二次元随笔",
+    description: "Moyu 的个人博客，暗黑笔记本风格，二次元、随笔、杂记",
     keywords: "Moyu, 二次元, 博客, 番剧, 随笔",
     author: "Moyu",
     language: "zh-CN",
   },
 
   sidebar: {
-    avatar: "/images/avatar.png",
+    avatar: "/images/avatar.webp",
     position: "right",
   },
 
@@ -154,7 +154,7 @@ export default {
 
   preloader: {
     enable: true,
-    text: "少女祈祷中...",
+    text: "正在书写笔记...",
     rotate: true,
   },
 

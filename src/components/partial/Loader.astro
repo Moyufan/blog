@@ -1,29 +1,20 @@
 ---
 import { PRELOADER } from "../../utils/config";
+import { urlFor } from "../../utils/urlFor";
 ---
 
 <div id="loader">
   <div class="loading-left-bg loading-bg"></div>
   <div class="loading-right-bg loading-bg"></div>
   <div class="spinner-box">
-    <div class={PRELOADER.rotate ? "loading-taichi rotate" : "loading-taichi"}>
-      <svg
+    <div class={PRELOADER.rotate ? "loading-notebook rotate" : "loading-notebook"}>
+      <img
+        src={urlFor("images/notebook.png")}
         width="150"
         height="150"
-        viewBox="0 0 1024 1024"
+        alt=""
         class="icon"
-        version="1.1"
-        xmlns="https://www.w3.org/2000/svg"
-        shape-rendering="geometricPrecision"
-      >
-        <path
-          d="M303.5 432A80 80 0 0 1 291.5 592A80 80 0 0 1 303.5 432z"
-          fill="var(--red-1, #ff5252)"></path>
-        <path
-          d="M512 65A447 447 0 0 1 512 959L512 929A417 417 0 0 0 512 95A417 417 0 0 0 512 929L512 959A447 447 0 0 1 512 65z 
-       M512 95A417 417 0 0 1 929 512A208.5 208.5 0 0 1 720.5 720.5L720.5 592A80 80 0 0 0 720.5 432A80 80 0 0 0 720.5 592L720.5 720.5A208.5 208.5 0 0 1 512 512A208.5 208.5 0 0 0 303.5 303.5A208.5 208.5 0 0 0 95 512A417 417 0 0 1 512 95z"
-          fill="var(--red-1, #ff5252)"></path>
-      </svg>
+      />
     </div>
     <div class="loading-word">{PRELOADER.text}</div>
   </div>
@@ -55,10 +46,10 @@ import { PRELOADER } from "../../utils/config";
 :global([data-theme="dark"])
   #loader 
     .loading-bg
-      background-color: rgba(37, 37, 37, .9)
+      background-color: rgba(20, 20, 20, .92)
 
     .spinner-box .loading-word
-      color: var(--red-1, #ff5252)
+      color: var(--red-2, #d32f2f)
 
 #loader
   .loading-bg
@@ -66,7 +57,7 @@ import { PRELOADER } from "../../utils/config";
     z-index: 1000
     width: 50%
     height: 100%
-    background-color: rgba(255, 255, 255, .9)
+    background-color: rgba(251, 250, 248, .94)
     transition: .8s
 
   .loading-right-bg
@@ -83,15 +74,16 @@ import { PRELOADER } from "../../utils/config";
     opacity: 1
     transition: .5s
 
-    .loading-taichi
-      opacity: .8
-      
+    .loading-notebook
+      opacity: .9
+      filter: drop-shadow(0 0 12px rgba(183, 28, 28, .35))
+
     .rotate
       animation: rotate-all 2s linear infinite
 
     .loading-word
       position: absolute
-      color: var(--red-1, #ff5252)
+      color: var(--red-1, #b71c1c)
       top: calc(50% + 110px)
       left: 50%
       transform: translate(-50%, -50%)

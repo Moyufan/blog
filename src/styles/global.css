@@ -1,14 +1,14 @@
 :root {
-  --red-0: #ff0000;
-  --red-1: #ff5252;
-  --red-2: #ff7c7c;
-  --red-3: #ffafaf;
-  --red-4: #ffd0d0;
-  --red-5: #ffecec;
-  --red-5-5: #fff3f3;
-  --red-6: #fff7f7;
-  --color-red-6-shadow: rgba(255, 78, 78, 0.6);
-  --color-red-3-shadow: rgba(255, 78, 78, 0.3);
+  --red-0: #8e0000;
+  --red-1: #b71c1c;
+  --red-2: #d32f2f;
+  --red-3: #e57373;
+  --red-4: #ef9a9a;
+  --red-5: #fde0e0;
+  --red-5-5: #fff2f2;
+  --red-6: #fff8f8;
+  --color-red-6-shadow: rgba(183, 28, 28, 0.45);
+  --color-red-3-shadow: rgba(183, 28, 28, 0.22);
   --grey-9: #888;
   --grey-7: var(--color-default);
 
@@ -16,12 +16,12 @@
   --color-default: #444;
   --color-border: var(--red-3);
   --color-link: var(--red-1);
-  --color-background: #eee;
-  --color-code-background: #f8f8f8;
-  --color-header-background: rgba(255, 255, 255, 0.9);
-  --color-footer-background: #fff;
-  --color-mobile-nav-background: #fff;
-  --color-wrap: #fff;
+  --color-background: #ece8e3;
+  --color-code-background: #f6f2ee;
+  --color-header-background: rgba(251, 250, 248, 0.92);
+  --color-footer-background: #fbfaf8;
+  --color-mobile-nav-background: #fbfaf8;
+  --color-wrap: #fbfaf8;
 
   --color-h2-border: #eee;
   --color-meta-shadow: var(--red-6);
@@ -37,22 +37,22 @@
 
 [data-theme="dark"]:root {
   --red-0: var(--red-1);
-  --red-4: rgba(255, 208, 208, .5);
-  --red-5: rgba(255, 228, 228, .15);
-  --red-5-5: rgba(255, 236, 236, .05);
-  --red-6: rgba(255, 243, 243, .2);
+  --red-4: rgba(229, 115, 115, .5);
+  --red-5: rgba(183, 28, 28, .18);
+  --red-5-5: rgba(229, 115, 115, .06);
+  --red-6: rgba(255, 255, 255, .08);
 
-  --color-archive-year: #999;
-  --color-default: #999;
+  --color-archive-year: #bbb;
+  --color-default: #aaa;
   --color-border: var(--red-5);
-  --color-background: #21252b;
-  --color-code-background: rgba(232, 232, 232, 0.2);
-  --color-header-background: #222222;
-  --color-footer-background: #21252b;
-  --color-mobile-nav-background: #21252b;
-  --color-wrap: #272b30;
+  --color-background: #101010;
+  --color-code-background: rgba(255, 255, 255, 0.06);
+  --color-header-background: #111111;
+  --color-footer-background: #101010;
+  --color-mobile-nav-background: #101010;
+  --color-wrap: #181818;
 
-  --color-h2-border: #47474a;
+  --color-h2-border: #333333;
   --color-meta-shadow: rgba(0, 0, 0, 0.2);
   --color-hover-shadow: rgba(0, 0, 0, 0.2);
 
