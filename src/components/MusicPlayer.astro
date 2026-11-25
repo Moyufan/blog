@@ -1,9 +1,34 @@
 ---
+import fs from "node:fs";
+import path from "node:path";
 import { urlFor } from "../utils/urlFor";
 import { playlist } from "../data/playlist";
 
 const defaultCover = urlFor("images/notebook.png");
-const tracks = playlist.map((track, index) => ({
+
+// 构建时扫描 public/music：把音频丢进这个目录就会自动进歌单
+const musicDir = path.join(process.cwd(), "public", "music");
+const localFiles = fs.existsSync(musicDir)
+  ? fs
+      .readdirSync(musicDir)
+      .filter((file) => /\.(mp3|wav|m4a|ogg|flac)$/i.test(file))
+      .sort((a, b) => a.localeCompare(b, "zh-CN"))
+  : [];
+
+const localTracks = localFiles.map((file) => {
+  const stem = file.replace(/\.[^.]+$/, "");
+  const parts = stem.split(/\s+-\s+/);
+  const artist = parts.length > 1 ? parts[0] : "本地音乐";
+  const title = parts.length > 1 ? parts.slice(1).join(" - ") : stem;
+  return {
+    title,
+    artist,
+    src: urlFor(`/music/${encodeURIComponent(file)}`),
+    cover: defaultCover,
+  };
+});
+
+const tracks = [...localTracks, ...playlist].map((track, index) => ({
   index,
   title: track.title,
   artist: track.artist,

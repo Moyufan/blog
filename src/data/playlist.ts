@@ -1,17 +1,17 @@
 /**
- * 歌单配置（本地氛围曲 + R2 外链模式）
+ * 歌单配置
  *
- * 第一首是站内自带的原创暗黑氛围曲，打开页面自动播放（静音起播，
- * 首次点击页面任意位置后出声），音量默认较低。
+ * 本地音乐：直接把 mp3 放进 public/music/ 即可，播放器在构建时会自动扫描，
+ * 无需改这个文件。歌名/歌手从文件名解析，格式「歌手 - 歌名.mp3」。
  *
- * 使用步骤：
+ * 这里只放可选的 Cloudflare R2 外链曲目：
  * 1. 在 Cloudflare R2 建一个公开 bucket，把 local-music/ 里的文件上传
  * 2. 开启 bucket 的公开访问（r2.dev 子域或绑定自定义域名）
  * 3. 把下面的 R2_BASE 改成你的公开域名，例如 https://pub-xxxx.r2.dev/music
  * 4. 保存后重新构建部署即可
  *
  * 说明：
- * - R2_BASE 留空时播放器只有第一首氛围曲，不会出现一堆 404
+ * - R2_BASE 留空时只有 public/music/ 里的本地曲目
  * - 文件名会自动做 URL 编码，中文和空格不用手动处理
  * - APE 格式浏览器不支持，未列入歌单；FLAC 在 Chrome/Edge 可播，Safari 可能不行
  */
@@ -100,13 +100,5 @@ const externalTracks: Track[] = R2_BASE
     }))
   : [];
 
-export const playlist: Track[] = [
-  // 站内自带的原创氛围曲（非任何作品原声），打开页面自动播放
-  {
-    title: "暗黑笔记 · 氛围曲（原创）",
-    artist: "Death Note 风格 · 自动播放",
-    src: "/music/dark-notebook-ambient.wav",
-    cover: "/images/notebook.png",
-  },
-  ...externalTracks,
-];
+// 本地曲目由 MusicPlayer.astro 自动扫描 public/music/，这里只返回外链曲目
+export const playlist: Track[] = [...externalTracks];
