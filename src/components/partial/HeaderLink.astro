@@ -8,7 +8,7 @@ const { href, ...props } = Astro.props;
 ---
 
 <span class="main-nav-link-wrap">
-  <Icon name="fa6-solid:yin-yang" class="main-nav-icon" size={24} />
+  <Icon name="fa6-solid:book" class="main-nav-icon" size={24} />
   <a class="main-nav-link" href={href} {...props}><slot /></a>
 </span>
 
@@ -33,7 +33,7 @@ const { href, ...props } = Astro.props;
       opacity: 1;
     }
     &:hover .main-nav-icon {
-      transform: rotate(90deg) scale(1.1);
+      transform: scale(1.15);
     }
   }
 
@@ -63,7 +63,7 @@ const { href, ...props } = Astro.props;
     align-items: center;
     font-size: 24px;
     font-weight: 400;
-    transform: rotate(90deg);
+    transform: none;
     transition: transform 0.3s, color 0.3s;
     cursor: pointer;
     will-change: transform;
