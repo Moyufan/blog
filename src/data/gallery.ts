@@ -72,4 +72,20 @@ export const photos: Photo[] = [
     width: 600,
     height: 600,
   },
+  {
+    src: "/gallery/dv.jpg",
+    title: "教室讨论",
+    caption: "summerdusk插图",
+    category: "场景画面",
+    width: 2581,
+    height: 1045,
+  },
+  {
+    src: "/gallery/run.jpg",
+    title: "教室讨论",
+    caption: "summerdusk插图",
+    category: "场景画面",
+    width: 2581,
+    height: 1045,
+  },
 ];
