@@ -1,0 +1,286 @@
+---
+// Live2D 宠物（基于 pixi-live2d-display + Cubism 4 runtime）
+// 模型：日和 Hiyori（Cubism 官方样例，仅限个人非商业用途）
+// 特性：延迟加载、可关闭并记住选择、点击播放动作、移动端缩小
+//
+// 换模型：只改下面 MODEL_PATH 一行。目录名大小写必须与实际路径一致
+//         （Cloudflare Pages 大小写敏感）
+// 下载其他模型：python scripts/fetch-live2d-model.py Mao
+const MODEL_PATH = "/live2d/Hiyori/Hiyori.model3.json";
+---
+
+<div class="live2d-pet" id="live2d-pet" aria-hidden="true">
+  <button class="lp-close" id="lp-close" type="button" aria-label="隐藏宠物" title="隐藏">×</button>
+  <canvas id="lp-canvas"></canvas>
+  <div class="lp-status" id="lp-status"></div>
+</div>
+
+<script is:inline define:vars={{ MODEL_PATH }}>
+  (function () {
+    function boot() {
+      var root = document.getElementById("live2d-pet");
+      if (!root) return;
+
+      var statusEl = document.getElementById("lp-status");
+      function status(text, isError) {
+        if (!statusEl) return;
+        statusEl.textContent = text || "";
+        statusEl.style.display = text ? "block" : "none";
+        statusEl.classList.toggle("is-error", !!isError);
+      }
+
+      var HIDDEN_KEY = "live2d-pet-hidden";
+      try {
+        if (localStorage.getItem(HIDDEN_KEY) === "1") {
+          root.remove();
+          return;
+        }
+      } catch (e) {}
+
+      var closeBtn = document.getElementById("lp-close");
+      if (closeBtn) {
+        closeBtn.addEventListener("click", function () {
+          try {
+            localStorage.setItem(HIDDEN_KEY, "1");
+          } catch (e) {}
+          root.remove();
+        });
+      }
+
+      if (window.matchMedia("(max-width: 767px)").matches) {
+        root.classList.add("lp-small");
+      }
+
+      var started = false;
+
+      function loadScript(src) {
+        return new Promise(function (resolve, reject) {
+          var s = document.createElement("script");
+          s.src = src;
+          s.async = true;
+          s.onload = resolve;
+          s.onerror = function () {
+            reject(new Error("failed: " + src));
+          };
+          document.head.appendChild(s);
+        });
+      }
+
+      function fit(model, w, h) {
+        // 这个库的尺寸在 internalModel 上；internalWidth/internalHeight 并不存在
+        var im = model.internalModel;
+        var iw = (im && im.width) || (im && im.originalWidth) || 1000;
+        var ih = (im && im.height) || (im && im.originalHeight) || 1000;
+        var s = Math.min(w / iw, h / ih);
+        model.scale.set(s);
+        model.anchor.set(0.5, 1);
+        model.x = w / 2;
+        model.y = h;
+        console.info(
+          "[live2d] 模型 " + Math.round(iw) + "x" + Math.round(ih) +
+          " → 缩放 " + s.toFixed(3) + " @ 画布 " + w + "x" + h
+        );
+      }
+
+      function init() {
+        var canvas = document.getElementById("lp-canvas");
+        if (!canvas) {
+          status("错误：找不到 canvas", true);
+          return;
+        }
+        if (!window.PIXI || !PIXI.live2d || !window.Live2DCubismCore) {
+          status("错误：引擎未就绪", true);
+          return;
+        }
+
+        var w = root.clientWidth || 200;
+        var h = root.clientHeight || 280;
+        status("初始化渲染…");
+
+        var app;
+        try {
+          app = new PIXI.Application({
+            view: canvas,
+            width: w,
+            height: h,
+            backgroundAlpha: 0,
+            antialias: true,
+            autoDensity: true,
+            resolution: window.devicePixelRatio || 1,
+          });
+        } catch (e) {
+          status("渲染失败：" + (e && e.message ? e.message : e), true);
+          console.warn("[live2d]", e);
+          return;
+        }
+
+        status("加载模型…");
+        PIXI.live2d.Live2DModel.from(MODEL_PATH, {
+          autoInteract: true,
+        })
+          .then(function (model) {
+            app.stage.addChild(model);
+            fit(model, w, h);
+            status("");
+
+            model.on("hit", function (areas) {
+              if (areas && areas.length) model.motion("Tap");
+            });
+
+            canvas.style.pointerEvents = "auto";
+            canvas.style.cursor = "pointer";
+
+            var timer = null;
+            window.addEventListener("resize", function () {
+              if (timer) clearTimeout(timer);
+              timer = setTimeout(function () {
+                var nw = root.clientWidth || 200;
+                var nh = root.clientHeight || 280;
+                app.renderer.resize(nw, nh);
+                fit(model, nw, nh);
+              }, 200);
+            });
+          })
+          .catch(function (err) {
+            var msg = err && err.message ? err.message : String(err);
+            status("模型加载失败：" + msg.slice(0, 60), true);
+            console.warn("[live2d] 模型加载失败", err);
+          });
+      }
+
+      function start() {
+        if (started) return;
+        started = true;
+        status("加载引擎 1/3…");
+        // 顺序很重要：Cubism Core → PixiJS → pixi-live2d-display
+        loadScript("https://cubism.live2d.com/sdk-web/cubismcore/live2dcubismcore.min.js")
+          .then(function () {
+            status("加载引擎 2/3…");
+            return loadScript(
+              "https://cdn.jsdelivr.net/npm/pixi.js@6.5.10/dist/browser/pixi.min.js"
+            );
+          })
+          .then(function () {
+            status("加载引擎 3/3…");
+            return loadScript(
+              "https://cdn.jsdelivr.net/npm/pixi-live2d-display@0.4.0/dist/cubism4.min.js"
+            );
+          })
+          .then(init)
+          .catch(function (err) {
+            var msg = err && err.message ? err.message : String(err);
+            status("依赖加载失败：" + msg.slice(0, 60), true);
+            console.warn("[live2d] 依赖加载失败", err);
+          });
+      }
+
+      // 延迟加载，避免影响首屏
+      if ("requestIdleCallback" in window) {
+        requestIdleCallback(start, { timeout: 2500 });
+      } else {
+        setTimeout(start, 1200);
+      }
+    }
+
+    // 关闭后按 R 键可恢复（不区分大小写，输入框内不触发）
+    document.addEventListener("keydown", function (e) {
+      if (e.key !== "r" && e.key !== "R") return;
+      if (e.ctrlKey || e.metaKey || e.altKey) return;
+      var tag = (e.target && e.target.tagName || "").toLowerCase();
+      if (tag === "input" || tag === "textarea" || tag === "select") return;
+      if (e.target && e.target.isContentEditable) return;
+      try {
+        if (localStorage.getItem("live2d-pet-hidden") !== "1") return;
+        localStorage.removeItem("live2d-pet-hidden");
+      } catch (err) {
+        return;
+      }
+      location.reload();
+    });
+
+    // is:inline 脚本会被提升到 head，必须等 DOM 就绪
+    if (document.readyState === "loading") {
+      document.addEventListener("DOMContentLoaded", boot, { once: true });
+    } else {
+      boot();
+    }
+  })();
+</script>
+
+<style lang="stylus">
+.live2d-pet
+  position fixed
+  right 16px
+  bottom 0
+  width 200px
+  height 280px
+  z-index 900
+  pointer-events none
+  user-select none
+
+  canvas
+    width 100%
+    height 100%
+    display block
+    pointer-events none
+
+.lp-close
+  position absolute
+  top 0
+  right 0
+  width 22px
+  height 22px
+  padding 0
+  line-height 20px
+  border-radius 50%
+  border 1px solid var(--red-5)
+  background var(--color-wrap)
+  color var(--grey-9)
+  font-size 14px
+  cursor pointer
+  pointer-events auto
+  opacity 0
+  transition .2s
+  z-index 2
+
+  &:hover
+    color var(--red-1)
+    border-color var(--red-2)
+
+.live2d-pet:hover .lp-close
+  opacity 1
+
+.lp-status
+  position absolute
+  left 0
+  right 0
+  bottom 6px
+  padding 3px 6px
+  border-radius 6px
+  background rgba(0, 0, 0, .6)
+  color #fff
+  font-size 11px
+  line-height 1.45
+  text-align center
+  pointer-events none
+  display none
+  word-break break-all
+
+  &.is-error
+    background #b3261e
+
+@media screen and (max-width: 767px)
+  .live2d-pet
+    width 120px
+    height 170px
+    right 8px
+
+  .lp-close
+    opacity 1
+    width 20px
+    height 20px
+    font-size 12px
+
+  .lp-status
+    font-size 10px
+</style>

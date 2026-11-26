@@ -13,6 +13,7 @@ import Header from "../components/Header.astro";
 import AfterFooter from "../components/AfterFooter.astro";
 import ToTop from "../components/partial/ToTop";
 import MusicPlayer from "../components/MusicPlayer.astro";
+import Live2DPet from "../components/Live2DPet.astro";
 import Loader from "../components/partial/Loader.astro";
 import Sidebar from "../components/Sidebar.astro";
 import MobileNav from "../components/MobileNav.astro";
@@ -94,6 +95,7 @@ const headerImage = cover || BANNER;
     <AfterFooter />
     <ToTop client:load imageUrl={urlFor("images/notebook.png")} />
     <MusicPlayer />
+    <Live2DPet />
     <MobileNav isPost={isPost} headings={headings} toc={toc} />
     <div id="mask" class="hide"></div>
     <SidebarScript />
