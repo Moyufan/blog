@@ -51,6 +51,16 @@ const tracks = [...localTracks, ...playlist].map((track, index) => ({
       </button>
     </header>
 
+    <div class="mp-filter">
+      <label class="mp-filter-label" for="mp-artist-select">歌手</label>
+      <div class="mp-select-wrap">
+        <select id="mp-artist-select" class="mp-select" aria-label="按歌手筛选">
+          <option value="">全部（{tracks.length} 首）</option>
+        </select>
+        <svg class="mp-select-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 10l5 5 5-5z" /></svg>
+      </div>
+    </div>
+
     <div class="mp-now">
       <img id="mp-cover" src={tracks[0]?.cover || defaultCover} alt="" width="54" height="54" />
       <div class="mp-meta">
@@ -173,6 +183,62 @@ const tracks = [...localTracks, ...playlist].map((track, index) => ({
     }
   };
 
+  // ---- 按歌手筛选（下拉菜单）----
+  const artistSelect = document.getElementById("mp-artist-select");
+  let visibleIndices = tracks.map((_, i) => i);
+
+  const applyFilter = (artist) => {
+    visibleIndices = artist
+      ? tracks.map((t, i) => (t.artist === artist ? i : -1)).filter((i) => i >= 0)
+      : tracks.map((_, i) => i);
+    const set = new Set(visibleIndices);
+    items.forEach((li, i) => {
+      const show = set.has(i);
+      li.style.display = show ? "" : "none";
+    });
+    // 可见项按顺序重新编号
+    visibleIndices.forEach((trackIndex, order) => {
+      const num = items[trackIndex]?.querySelector(".mp-num");
+      if (num) num.textContent = String(order + 1);
+    });
+    if (artistSelect && artistSelect.value !== (artist || "")) {
+      artistSelect.value = artist || "";
+    }
+  };
+
+  const buildArtists = () => {
+    if (!artistSelect || !tracks.length) return;
+    const counts = new Map();
+    tracks.forEach((t) => counts.set(t.artist, (counts.get(t.artist) || 0) + 1));
+
+    Array.from(counts.entries())
+      .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0], "zh-CN"))
+      .forEach(([artist, count]) => {
+        const opt = document.createElement("option");
+        opt.value = artist;
+        opt.textContent = `${artist}（${count} 首）`;
+        artistSelect.append(opt);
+      });
+
+    artistSelect.addEventListener("change", () => applyFilter(artistSelect.value));
+  };
+
+  // 在当前筛选范围内步进
+  const step = (dir) => {
+    if (!visibleIndices.length) return;
+    const curPos = visibleIndices.indexOf(index);
+    let nextPos;
+    if (curPos === -1) {
+      nextPos = dir > 0 ? 0 : visibleIndices.length - 1;
+    } else {
+      nextPos = (curPos + dir + visibleIndices.length) % visibleIndices.length;
+    }
+    playTrack(visibleIndices[nextPos]);
+  };
+
+  buildArtists();
+  applyFilter("");
+
   fab.addEventListener("click", () => {
     const open = panel.classList.toggle("open");
     fab.classList.toggle("open", open);
@@ -185,8 +251,8 @@ const tracks = [...localTracks, ...playlist].map((track, index) => ({
   });
 
   playBtn.addEventListener("click", togglePlay);
-  document.getElementById("mp-prev")?.addEventListener("click", () => playTrack(index - 1));
-  document.getElementById("mp-next")?.addEventListener("click", () => playTrack(index + 1));
+  document.getElementById("mp-prev")?.addEventListener("click", () => step(-1));
+  document.getElementById("mp-next")?.addEventListener("click", () => step(1));
   loopBtn?.addEventListener("click", () => {
     audio.loop = !audio.loop;
     loopBtn.classList.toggle("active", audio.loop);
@@ -218,7 +284,7 @@ const tracks = [...localTracks, ...playlist].map((track, index) => ({
     currentEl.textContent = fmt(audio.currentTime);
   });
   audio.addEventListener("ended", () => {
-    if (!audio.loop && tracks.length > 1) playTrack(index + 1);
+    if (!audio.loop && visibleIndices.length > 1) step(1);
   });
 
   progress.addEventListener("pointerdown", () => { seeking = true; });
@@ -346,6 +412,60 @@ const tracks = [...localTracks, ...playlist].map((track, index) => ({
   align-items center
   justify-content space-between
   margin-bottom 14px
+
+.mp-filter
+  display flex
+  align-items center
+  gap 8px
+  margin-bottom 12px
+
+.mp-filter-label
+  font-size 11px
+  color var(--grey-9)
+  flex none
+
+.mp-select-wrap
+  position relative
+  flex 1
+  min-width 0
+
+.mp-select
+  width 100%
+  box-sizing border-box
+  appearance none
+  -webkit-appearance none
+  padding 6px 26px 6px 10px
+  border-radius 8px
+  border 1px solid var(--red-5)
+  background var(--color-wrap)
+  color var(--color-default)
+  font-size 12px
+  font-family inherit
+  cursor pointer
+  transition .2s
+  text-overflow ellipsis
+
+  &:hover
+    border-color var(--red-2)
+
+  &:focus
+    outline none
+    border-color var(--red-1)
+    box-shadow 0 0 0 2px var(--red-5-5)
+
+  option
+    background var(--color-wrap)
+    color var(--color-default)
+
+.mp-select-arrow
+  position absolute
+  right 6px
+  top 50%
+  transform translateY(-50%)
+  width 16px
+  height 16px
+  fill var(--red-1)
+  pointer-events none
 
 .mp-title
   font-weight 700
